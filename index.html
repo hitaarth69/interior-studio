@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🏠 3D Interior Design Studio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="app">
+        <!-- Top Toolbar -->
+        <header class="toolbar">
+            <div class="toolbar-left">
+                <h1>🏠 Interior Studio</h1>
+                <span class="badge">Pro</span>
+            </div>
+            <div class="toolbar-center">
+                <button id="undo-btn" class="tool-btn" title="Undo (Ctrl+Z)"><i class="fas fa-undo"></i></button>
+                <button id="redo-btn" class="tool-btn" title="Redo (Ctrl+Y)"><i class="fas fa-redo"></i></button>
+                <button id="export-png-btn" class="tool-btn"><i class="fas fa-image"></i> PNG</button>
+                <button id="save-room-btn" class="tool-btn"><i class="fas fa-save"></i> Save</button>
+                <button id="load-room-btn" class="tool-btn"><i class="fas fa-folder-open"></i> Load</button>
+                <button id="reset-room-btn" class="tool-btn" style="color:var(--danger);"><i class="fas fa-trash"></i> Reset</button>
+            </div>
+            <div class="toolbar-right">
+                <button id="theme-toggle" class="tool-btn"><i class="fas fa-moon"></i></button>
+            </div>
+        </header>
+
+        <!-- Main Layout -->
+        <div class="main-layout">
+            <!-- 3D Canvas -->
+            <div class="canvas-container" id="canvas-container"></div>
+
+            <!-- Right Sidebar -->
+            <aside class="sidebar-right">
+                <!-- Room Controls -->
+                <div class="panel">
+                    <h3>🏠 Room</h3>
+                    <div class="control-group">
+                        <label>Width <span id="width-val">6</span>m</label>
+                        <input type="range" id="room-width" min="3" max="12" step="0.5" value="6" />
+                    </div>
+                    <div class="control-group">
+                        <label>Depth <span id="depth-val">5</span>m</label>
+                        <input type="range" id="room-depth" min="3" max="10" step="0.5" value="5" />
+                    </div>
+                    <div class="control-group">
+                        <label>Height <span id="height-val">3</span>m</label>
+                        <input type="range" id="room-height" min="2.5" max="5" step="0.1" value="3" />
+                    </div>
+                    <div class="control-group">
+                        <label>Wall Color</label>
+                        <div class="color-picker" id="wall-color-picker">
+                            <button data-color="#f5f0eb" style="background:#f5f0eb;"></button>
+                            <button data-color="#e8e0d5" style="background:#e8e0d5;"></button>
+                            <button data-color="#d4c9b8" style="background:#d4c9b8;"></button>
+                            <button data-color="#a8c4d9" style="background:#a8c4d9;"></button>
+                            <button data-color="#e6d5b8" style="background:#e6d5b8;"></button>
+                            <button data-color="#f0e6d3" style="background:#f0e6d3;"></button>
+                            <button data-color="#d9c8b8" style="background:#d9c8b8;"></button>
+                            <button data-color="#c4d4d9" style="background:#c4d4d9;"></button>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label>Floor Texture</label>
+                        <div class="color-picker" id="floor-color-picker">
+                            <button data-color="#d4b896" style="background:#d4b896;"></button>
+                            <button data-color="#c4a882" style="background:#c4a882;"></button>
+                            <button data-color="#b89a78" style="background:#b89a78;"></button>
+                            <button data-color="#a88c6e" style="background:#a88c6e;"></button>
+                            <button data-color="#8a7a64" style="background:#8a7a64;"></button>
+                            <button data-color="#d9c8a8" style="background:#d9c8a8;"></button>
+                            <button data-color="#e8dcc8" style="background:#e8dcc8;"></button>
+                            <button data-color="#f0ece4" style="background:#f0ece4;"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Furniture Library -->
+                <div class="panel">
+                    <h3>🪑 Furniture</h3>
+                    <div class="furniture-grid">
+                        <button class="furniture-btn" data-type="sofa">🛋️ Sofa</button>
+                        <button class="furniture-btn" data-type="table">🪵 Table</button>
+                        <button class="furniture-btn" data-type="chair">🪑 Chair</button>
+                        <button class="furniture-btn" data-type="bed">🛏️ Bed</button>
+                        <button class="furniture-btn" data-type="shelf">📚 Shelf</button>
+                        <button class="furniture-btn" data-type="lamp">💡 Lamp</button>
+                        <button class="furniture-btn" data-type="plant">🌿 Plant</button>
+                        <button class="furniture-btn" data-type="rug">🧶 Rug</button>
+                    </div>
+                    <div style="margin-top:0.5rem;">
+                        <button id="delete-selected-btn" class="tool-btn" style="width:100%;color:var(--danger);border-color:var(--danger);">
+                            <i class="fas fa-trash"></i> Delete Selected
+                        </button>
+                    </div>
+                    <div style="margin-top:0.3rem;">
+                        <button id="rotate-selected-btn" class="tool-btn" style="width:100%;">
+                            <i class="fas fa-rotate"></i> Rotate 45°
+                        </button>
+                    </div>
+                    <div style="margin-top:0.3rem;display:flex;gap:0.3rem;">
+                        <button id="snap-toggle-btn" class="tool-btn" style="flex:1;">🔲 Snap: On</button>
+                        <button id="grid-toggle-btn" class="tool-btn" style="flex:1;">📐 Grid</button>
+                    </div>
+                </div>
+
+                <!-- Info / Stats -->
+                <div class="panel" style="margin-top:0.3rem;">
+                    <div style="display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-muted);">
+                        <span id="furniture-count">0 items</span>
+                        <span id="fps-display">60 FPS</span>
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="status-bar">
+            <span id="status-text">✅ Ready — Click a furniture type, then click the floor to place it.</span>
+            <span style="margin-left:auto;font-size:0.65rem;">Drag to orbit · Scroll to zoom · Click to select · Right-click to delete</span>
+        </footer>
+    </div>
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
